@@ -1,0 +1,55 @@
+<script>
+  
+  // arsa alanları (dönüm):
+  const areas = {
+    1: 10,
+    2: 10,
+    3: 10
+  }
+
+  // senelik arsalara ekilen ürün (a, b, c) dağılımları (%):
+  const years = [
+    {
+      1: { a: 100, b: 0, c: 0 },
+      2: { a: 0, b: 100, c: 0 },
+      3: { a: 0, b: 0, c: 100 }
+    },
+    {
+      1: { a: 100, b: 0, c: 0 },
+      2: { a: 0, b: 50, c: 50 },
+      3: { a: 0, b: 0, c: 100 }
+    },
+    {
+      1: { a: 20, b: 80, c: 0 },
+      2: { a: 0, b: 100, c: 0 },
+      3: { a: 0, b: 0, c: 100 }
+    },
+    {
+      1: { a: 1, b: 0, c: 0 },
+      2: { a: 0, b: 100, c: 0 },
+      3: { a: 0, b: 0, c: 100 }
+    }
+  ]
+
+  const firstValue = {a: 0, b: 0, c: 0};
+  const totalValues = years.reduce((accumulator, item) => {
+    for (let key in item) {
+      accumulator['a'] = accumulator['a'] + ((areas[key] * item[key]['a']) / 100);
+      accumulator['b'] = accumulator['b'] + ((areas[key] * item[key]['b']) / 100);
+      accumulator['c'] = accumulator['c'] + ((areas[key] * item[key]['c']) / 100);
+    }
+    return accumulator;
+  }, firstValue)
+
+  const totalValuesSorted = Object.keys(totalValues).sort((a, b) => {
+    return totalValues[b] - totalValues[a]
+  });
+
+  alert(`
+    Çiftçi 4 yıl sonunda a ürünü için ${totalValues.a} dönüm,
+    b ürünü için ${totalValues.b} dönüm,
+    c ürünü için ise ${totalValues.c} dönüm ekim yapmıştır.
+    Çiftçi en çok ${totalValuesSorted[0]} ürününü ekmiştir.
+  `);
+
+</script>
