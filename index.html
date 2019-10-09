@@ -10,46 +10,69 @@
   // senelik arsalara ekilen ürün (a, b, c) dağılımları (%):
   const years = [
     {
-      1: { a: 100, b: 0, c: 0 },
-      2: { a: 0, b: 100, c: 0 },
-      3: { a: 0, b: 0, c: 100 }
+      1: { a: 100, b: 0, c: 0, empty: 0 },
+      2: { a: 0, b: 100, c: 0, empty: 0 },
+      3: { a: 0, b: 0, c: 100, empty: 0 }
     },
     {
-      1: { a: 100, b: 0, c: 0 },
-      2: { a: 0, b: 50, c: 50 },
-      3: { a: 0, b: 0, c: 100 }
+      1: { a: 100, b: 0, c: 0, empty: 0 },
+      2: { a: 0, b: 50, c: 50, empty: 0 },
+      3: { a: 0, b: 0, c: 100, empty: 0 }
     },
     {
-      1: { a: 20, b: 80, c: 0 },
-      2: { a: 0, b: 100, c: 0 },
-      3: { a: 0, b: 0, c: 100 }
+      1: { a: 20, b: 80, c: 0, empty: 0 },
+      2: { a: 0, b: 100, c: 0, empty: 0 },
+      3: { a: 0, b: 0, c: 100, empty: 0 }
     },
     {
-      1: { a: 1, b: 0, c: 0 },
-      2: { a: 0, b: 100, c: 0 },
-      3: { a: 0, b: 0, c: 100 }
+      1: { a: 1, b: 0, c: 0, empty: 99 },
+      2: { a: 0, b: 100, c: 0, empty: 0 },
+      3: { a: 0, b: 0, c: 100, empty: 0 }
     }
   ]
 
-  const firstValue = {a: 0, b: 0, c: 0};
-  const totalValues = years.reduce((accumulator, item) => {
+  // Her bir arsanın kare olduğunu varsayalım
+  // Her bir arsanın metrekare cinsinden alanı:
+  const areasMt = 10 * 1000; // 10000 metrekare (1 dekar yada dönüm = 1000 metrekare)
+  // dikey ve yatay kenar uzunluklarını bulmak için kökünü alalım:
+  const sideLength = Math.sqrt(areasMt); // 100 -> arsaların kenar uzunluğu
+
+  const firstValue = { 
+    totals: {
+      a: 0,
+      b: 0,
+      c: 0
+    },
+    lines: {}
+  };
+  const totalValues = years.reduce((accumulator, item, index) => {
     for (let key in item) {
-      accumulator['a'] = accumulator['a'] + ((areas[key] * item[key]['a']) / 100);
-      accumulator['b'] = accumulator['b'] + ((areas[key] * item[key]['b']) / 100);
-      accumulator['c'] = accumulator['c'] + ((areas[key] * item[key]['c']) / 100);
+      // her bir ekinin yıllık ekildiği dönüm:
+      const decareA = (areas[key] * item[key]['a']) / 100;
+      const decareB = (areas[key] * item[key]['b']) / 100;
+      const decareC = (areas[key] * item[key]['c']) / 100;
+
+      // her yıl ekilenleri toplayarak ilerliyoruz (dönüm cinsinden):
+      accumulator['totals']['a'] = accumulator['totals']['a'] + decareA;
+      accumulator['totals']['b'] = accumulator['totals']['b'] + decareB;
+      accumulator['totals']['c'] = accumulator['totals']['c'] + decareC;
     }
+
     return accumulator;
   }, firstValue)
 
-  const totalValuesSorted = Object.keys(totalValues).sort((a, b) => {
-    return totalValues[b] - totalValues[a]
+  // toplam ekilen ekinleri büyükten küçüğe sıralayalım:
+  const totalValuesSorted = Object.keys(totalValues.totals).sort((a, b) => {
+    return totalValues.totals[b] - totalValues.totals[a]
   });
 
   alert(`
-    Çiftçi 4 yıl sonunda a ürünü için ${totalValues.a} dönüm,
-    b ürünü için ${totalValues.b} dönüm,
-    c ürünü için ise ${totalValues.c} dönüm ekim yapmıştır.
+    Çiftçi 4 yıl sonunda a ürünü için ${totalValues.totals.a} dönüm,
+    b ürünü için ${totalValues.totals.b} dönüm,
+    c ürünü için ise ${totalValues.totals.c} dönüm ekim yapmıştır.
     Çiftçi en çok ${totalValuesSorted[0]} ürününü ekmiştir.
   `);
+
+  console.log(totalValues);
 
 </script>
